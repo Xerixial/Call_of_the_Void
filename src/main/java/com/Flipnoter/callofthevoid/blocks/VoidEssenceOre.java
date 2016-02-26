@@ -45,7 +45,7 @@ public class VoidEssenceOre extends Block {
 
     public int quantityDropped(IBlockState blockstate, int fortune, Random random) {
 
-        return 2 + random.nextInt(1 + fortune + 1);
+        return 1 + random.nextInt(1 + fortune + 1);
 
     }
 }

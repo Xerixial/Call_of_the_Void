@@ -10,6 +10,7 @@ public class ModTileEntities {
     public static void Init() {
 
         GameRegistry.registerTileEntity(EssenceCrystallizerTileEntity.class, "Essence_Crystallizer");
+        GameRegistry.registerTileEntity(ItemPedestalTileEntity.class, "Item_Pedestal");
 
     }
 }

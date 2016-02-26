@@ -35,7 +35,7 @@ public class EssenceCrystallizerRenderer extends TileEntitySpecialRenderer {
                 GlStateManager.translate(x, y, z);
                 GL11.glTranslatef(0.5f, 0.5f, 0.5f);
                 GL11.glScalef(1, 1, 1);
-                GL11.glRotatef(tile.getWorld().getWorldTime(), 0F, 1F, 0F);
+                GL11.glRotatef(tile.getWorld().getWorldTime(), 0F, -1F, 0F);
                 Minecraft.getMinecraft().getRenderManager().renderEntityWithPosYaw(entityItem, 0.0D, 0.0D, 0.0D, 0.0F, 0.0F);
 
             GlStateManager.popMatrix();

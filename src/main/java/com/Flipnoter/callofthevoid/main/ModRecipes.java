@@ -26,6 +26,8 @@ public class ModRecipes {
         GameRegistry.addRecipe(new ItemStack(ModBlocks.EssenceCrystallizer),
                 new Object[] {"R R", "IRI", "BDB", 'R', ModItems.RefinedVoidEssence, 'I', Items.iron_ingot, 'B', Blocks.iron_block, 'D', Blocks.diamond_block});
 
+        GameRegistry.addRecipe(new ItemStack(ModBlocks.ItemPedestal, 2), new Object[] {"SRS", " S ", "SCS", 'S', Blocks.stone, 'R', Items.redstone, 'C', ModItems.CrystallizedEssence});
+
     }
 
     static void InitFurnace() {

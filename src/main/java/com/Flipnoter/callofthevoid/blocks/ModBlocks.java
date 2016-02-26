@@ -11,11 +11,13 @@ public final class ModBlocks {
     public static Block VoidEssenceOre;
 
     public static Block EssenceCrystallizer;
+    public static Block ItemPedestal;
 
     public static void Init() {
 
         Register(VoidEssenceOre = new VoidEssenceOre());
         Register(EssenceCrystallizer = new EssenceCrystallizer());
+        Register(ItemPedestal = new ItemPedestal());
 
     }
 
