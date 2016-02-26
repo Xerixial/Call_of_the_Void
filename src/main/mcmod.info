@@ -1,0 +1,16 @@
+[
+{
+  "modid": "${modid}",
+  "name": "${name}",
+  "description": "no good description made",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Flipnoter"],
+  "credits": "Created By Flipnoter",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": ["mod_MinecraftForge"]
+}
+]

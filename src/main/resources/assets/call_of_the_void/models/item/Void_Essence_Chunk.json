@@ -1,0 +1,6 @@
+{
+    "parent":"call_of_the_void:item/standard_item",
+    "textures": {
+        "layer0":"call_of_the_void:items/Void_Essence_Chunk"
+    }
+}
