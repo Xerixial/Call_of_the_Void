@@ -19,6 +19,7 @@ public class ItemRenderRegister {
         register(ModItems.CompressedVoidEssence);
         register(ModItems.RefinedVoidEssence);
         register(ModItems.CrystallizedEssence);
+        register(ModItems.ImpureVoidIngot);
 
     }
 

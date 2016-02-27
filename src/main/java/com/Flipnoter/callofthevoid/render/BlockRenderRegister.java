@@ -3,8 +3,10 @@ package com.Flipnoter.callofthevoid.render;
 import com.Flipnoter.callofthevoid.blocks.ModBlocks;
 import com.Flipnoter.callofthevoid.main.main;
 import com.Flipnoter.callofthevoid.render.blocks.EssenceCrystallizerRenderer;
+import com.Flipnoter.callofthevoid.render.blocks.ItemAltarRenderer;
 import com.Flipnoter.callofthevoid.render.blocks.ItemPedestalRenderer;
 import com.Flipnoter.callofthevoid.tileentity.EssenceCrystallizerTileEntity;
+import com.Flipnoter.callofthevoid.tileentity.ItemAltarTileEntity;
 import com.Flipnoter.callofthevoid.tileentity.ItemPedestalTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
@@ -22,11 +24,14 @@ public class BlockRenderRegister {
     public static void registerBlockRenderer() {
 
         register(ModBlocks.VoidEssenceOre);
+        register(ModBlocks.CrystalBlock);
         register(ModBlocks.EssenceCrystallizer);
         register(ModBlocks.ItemPedestal);
+        register(ModBlocks.ItemAltar);
 
         ClientRegistry.bindTileEntitySpecialRenderer(EssenceCrystallizerTileEntity.class, new EssenceCrystallizerRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(ItemPedestalTileEntity.class, new ItemPedestalRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(ItemAltarTileEntity.class, new ItemAltarRenderer());
 
     }
 

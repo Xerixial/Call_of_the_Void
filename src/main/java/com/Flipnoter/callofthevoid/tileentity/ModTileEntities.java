@@ -11,6 +11,7 @@ public class ModTileEntities {
 
         GameRegistry.registerTileEntity(EssenceCrystallizerTileEntity.class, "Essence_Crystallizer");
         GameRegistry.registerTileEntity(ItemPedestalTileEntity.class, "Item_Pedestal");
+        GameRegistry.registerTileEntity(ItemAltarTileEntity.class, "Item_Altar");
 
     }
 }

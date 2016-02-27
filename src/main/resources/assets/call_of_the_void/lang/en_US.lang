@@ -1,8 +1,11 @@
 tile.Void_Essence_Ore.name=Void Essence Ore
+tile.Crystal_Block.name=Impure Crystal Block
 tile.Essence_Crystallizer.name=Essence Crystallizer
 tile.Item_Pedestal.name=Item Pedestal
+tile.Item_Altar.name=Item Altar
 item.Void_Essence_Chunk.name=Void Essence Chunk
 item.Compressed_Void_Essence.name=Compressed Void Essence
 item.Refined_Void_Essence.name=Refined Void Essence
 item.Crystallized_Essence.name=Impure Crystallized Essence
+item.Impure_Void_Ingot.name=Impure Void Ingot
 itemGroup.Call_of_the_Void=Essence of the Void

@@ -1,16 +1,14 @@
 package com.Flipnoter.callofthevoid.blocks;
 
-import com.Flipnoter.callofthevoid.gui.ModGUIHandler;
 import com.Flipnoter.callofthevoid.items.ModItems;
-import com.Flipnoter.callofthevoid.main.CommonProxy;
-import com.Flipnoter.callofthevoid.main.main;
-import com.Flipnoter.callofthevoid.tileentity.EssenceCrystallizerTileEntity;
+import com.Flipnoter.callofthevoid.tileentity.ItemAltarTileEntity;
+import com.Flipnoter.callofthevoid.tileentity.ItemPedestalTileEntity;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.command.CommandReplaceItem;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
@@ -19,25 +17,23 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
 /**
- * Created by Connor on 2/13/2016.
+ * Created by Connor on 2/25/2016.
  */
-public class EssenceCrystallizer extends BlockContainer implements ITileEntityProvider {
+public class ItemAltar extends BlockContainer implements ITileEntityProvider {
 
-    protected EssenceCrystallizer() {
+    public ItemAltar() {
 
         super(Material.iron);
-        this.setUnlocalizedName("Essence_Crystallizer");
+        this.setUnlocalizedName("Item_Altar");
         this.setCreativeTab(ModItems.VoidTab);
         this.setHardness(6f);
         this.setResistance(10f);
         this.setHarvestLevel("pickaxe", 3);
+        this.setBlockBounds(3f / 16f, 0, 3f / 16f, 1f - 3f / 16f, 1, 1f - 3f / 16f);
         this.isBlockContainer = true;
 
     }
@@ -59,11 +55,31 @@ public class EssenceCrystallizer extends BlockContainer implements ITileEntityPr
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
 
-        if(!world.isRemote) {
+        ItemAltarTileEntity tile = (ItemAltarTileEntity)world.getTileEntity(pos);
 
-            FMLNetworkHandler.openGui(player, main.instance, ModGUIHandler.Essence_Crystallizer_GUI, world, pos.getX(), pos.getY(), pos.getZ());
+        if(tile.getStackInSlot(0) == null && player.getHeldItem() != null) {
 
-            //player.openGui(main.instance, ModGUIHandler.Essence_Crystallizer_GUI, world, pos.getX(), pos.getY(), pos.getZ());
+            ItemStack input = player.getHeldItem().copy();
+            input.stackSize = 1;
+            player.getHeldItem().stackSize--;
+            tile.setInventorySlotContents(0, input);
+
+        }
+        else if (tile.getStackInSlot(0) != null && player.getHeldItem() == null) {
+
+            if(!tile.getWorld().isRemote) {
+
+                EntityItem invItem = new EntityItem(tile.getWorld(), player.posX, player.posY + 0.25, player.posZ, tile.getStackInSlot(0));
+                tile.getWorld().spawnEntityInWorld(invItem);
+
+            }
+
+            tile.clear();
+
+        }
+        else if(tile.getStackInSlot(0) != null && player.getHeldItem() != null) {
+
+            tile.setRunning(true);
 
         }
 
@@ -75,14 +91,14 @@ public class EssenceCrystallizer extends BlockContainer implements ITileEntityPr
     @Override
     public TileEntity createNewTileEntity(World world, int meta) {
 
-        return new EssenceCrystallizerTileEntity();
+        return new ItemAltarTileEntity();
 
     }
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
 
-        EssenceCrystallizerTileEntity te = (EssenceCrystallizerTileEntity)world.getTileEntity(pos);
+        ItemAltarTileEntity te = (ItemAltarTileEntity)world.getTileEntity(pos);
         InventoryHelper.dropInventoryItems(world, pos, te);
 
         super.breakBlock(world, pos, state);
@@ -94,7 +110,7 @@ public class EssenceCrystallizer extends BlockContainer implements ITileEntityPr
 
         if(stack.hasDisplayName()) {
 
-            ((EssenceCrystallizerTileEntity)worldIn.getTileEntity(pos)).setCustomName(stack.getDisplayName());
+            ((ItemAltarTileEntity)worldIn.getTileEntity(pos)).setCustomName(stack.getDisplayName());
 
         }
     }
@@ -108,18 +124,5 @@ public class EssenceCrystallizer extends BlockContainer implements ITileEntityPr
 
         return tileentity != null && tileentity.receiveClientEvent(eventID, eventParam);
 
-    }
-
-    @SideOnly(Side.CLIENT)
-    public void randomDisplayTick(World world, BlockPos pos, IBlockState state, Random rand) {
-
-        if(((EssenceCrystallizerTileEntity)world.getTileEntity(pos)).getCurEssence() > 0) {
-
-            world.spawnParticle(EnumParticleTypes.SUSPENDED_DEPTH, pos.getX() + 0.15d, pos.getY() + 1.1d, pos.getZ() + 0.15d, 0, 0, 0);
-            world.spawnParticle(EnumParticleTypes.SUSPENDED_DEPTH, pos.getX() + 1d, pos.getY() + 1.1d, pos.getZ() + 1d, 0, 0, 0);
-            world.spawnParticle(EnumParticleTypes.SUSPENDED_DEPTH, pos.getX() + 1d, pos.getY() + 1.1d, pos.getZ() + 0.15d, 0, 0, 0);
-            world.spawnParticle(EnumParticleTypes.SUSPENDED_DEPTH, pos.getX() + 0.15d, pos.getY() + 1.1d, pos.getZ() + 1d, 0, 0, 0);
-
-        }
     }
 }

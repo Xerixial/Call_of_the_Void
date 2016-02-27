@@ -14,6 +14,7 @@ public class ModItems {
     public static Item CompressedVoidEssence;
     public static Item RefinedVoidEssence;
     public static Item CrystallizedEssence;
+    public static Item ImpureVoidIngot;
 
     public static final CreativeTabs VoidTab = new CreativeTabs("Call_of_the_Void") {
 
@@ -31,6 +32,7 @@ public class ModItems {
         Register(CompressedVoidEssence = new CompressedVoidEssence());
         Register(RefinedVoidEssence = new RefinedVoidEssence());
         Register(CrystallizedEssence = new CrystallizedEssence());
+        Register(ImpureVoidIngot = new ImpureVoidIngot());
 
     }
 

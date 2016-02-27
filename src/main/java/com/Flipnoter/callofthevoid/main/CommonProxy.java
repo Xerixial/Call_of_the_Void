@@ -1,6 +1,7 @@
 package com.Flipnoter.callofthevoid.main;
 
 import com.Flipnoter.callofthevoid.blocks.ModBlocks;
+import com.Flipnoter.callofthevoid.crafting.ModRecipes;
 import com.Flipnoter.callofthevoid.gui.ModGUIHandler;
 import com.Flipnoter.callofthevoid.items.ModItems;
 import com.Flipnoter.callofthevoid.tileentity.ModTileEntities;

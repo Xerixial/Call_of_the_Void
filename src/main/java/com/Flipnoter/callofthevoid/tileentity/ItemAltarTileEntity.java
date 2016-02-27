@@ -1,13 +1,13 @@
 package com.Flipnoter.callofthevoid.tileentity;
 
 import com.Flipnoter.callofthevoid.blocks.ModBlocks;
+import com.Flipnoter.callofthevoid.crafting.InfusionRecipe;
+import com.Flipnoter.callofthevoid.crafting.InfusionRecipes;
 import com.Flipnoter.callofthevoid.items.ModItems;
-import net.minecraft.client.Minecraft;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -16,25 +16,24 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
-
-import java.util.Random;
+import org.lwjgl.Sys;
+import scala.tools.nsc.Global;
 
 /**
- * Created by Connor on 2/13/2016.
+ * Created by Connor on 2/25/2016.
  */
-public class EssenceCrystallizerTileEntity extends TileEntity implements IInventory, ITickable {
+public class ItemAltarTileEntity extends TileEntity implements IInventory, ITickable {
 
-    private int CurEssence, MaxEssence = 25000;
-
-    private int EssencePerTick = 1, buffer;
-    private int TimeToComplete = 600, CurTime;
-
-    private static boolean converting;
+    private boolean Running;
 
     private ItemStack[] Inventory;
-    private String InvName = "Essence Crystallizer";
+    private String InvName = "Item Altar";
 
-    public EssenceCrystallizerTileEntity() {
+    private BlockPos[] pedPos;
+
+    InfusionRecipes recipes = InfusionRecipes.instance();
+
+    public ItemAltarTileEntity() {
 
         Inventory = new ItemStack[getSizeInventory()];
 
@@ -55,7 +54,7 @@ public class EssenceCrystallizerTileEntity extends TileEntity implements IInvent
     @Override
     public String getName() {
 
-        return hasCustomName() ? InvName : "container.Essence_Crystallizer_Tile_Entity.name";
+        return hasCustomName() ? InvName : "container.Item_Altar_Tile_Entity.name";
 
     }
 
@@ -76,14 +75,14 @@ public class EssenceCrystallizerTileEntity extends TileEntity implements IInvent
     @Override
     public int getSizeInventory() {
 
-        return 4;
+        return 1;
 
     }
 
     @Override
     public int getInventoryStackLimit() {
 
-        return 64;
+        return 1;
 
     }
 
@@ -184,34 +183,7 @@ public class EssenceCrystallizerTileEntity extends TileEntity implements IInvent
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack) {
 
-        return false;
-
-    }
-
-    public static boolean isFuel(ItemStack item) {
-
-        return getFuelAmount(item) > 0;
-
-    }
-
-    public static int getFuelAmount(ItemStack stack) {
-
-        if(stack != null) {
-
-            Item item = stack.getItem();
-
-            if(item == null)
-                return 0;
-
-            if(item == ModItems.VoidEssenceChunk)
-                return 100;
-
-            if(item == ModItems.CompressedVoidEssence)
-                return 900;
-
-        }
-
-        return 0;
+        return true;
 
     }
 
@@ -245,13 +217,7 @@ public class EssenceCrystallizerTileEntity extends TileEntity implements IInvent
 
         super.writeToNBT(nbt);
 
-        nbt.setInteger("CurEssence", CurEssence);
-
-        nbt.setInteger("buffer", buffer);
-
-        nbt.setInteger("CurTime", CurTime);
-
-        nbt.setBoolean("converting", converting);
+        nbt.setBoolean("Running", Running);
 
         NBTTagList list = new NBTTagList();
 
@@ -279,13 +245,7 @@ public class EssenceCrystallizerTileEntity extends TileEntity implements IInvent
 
         super.readFromNBT(nbt);
 
-        CurEssence = nbt.getInteger("CurEssence");
-
-        buffer = nbt.getInteger("buffer");
-
-        CurTime = nbt.getInteger("CurTime");
-
-        converting = nbt.getBoolean("converting");
+        Running = nbt.getBoolean("Running");
 
         NBTTagList list = nbt.getTagList("Items", 10);
 
@@ -320,142 +280,77 @@ public class EssenceCrystallizerTileEntity extends TileEntity implements IInvent
 
     }
 
-    public int getCurEssence() {
+    private void setPedPos() {
 
-        return CurEssence;
+        pedPos = new BlockPos[] {new BlockPos(pos.getX() + 1, pos.getY(), pos.getZ() + 4),
+                                 new BlockPos(pos.getX() + 3, pos.getY(), pos.getZ() + 3),
+                                 new BlockPos(pos.getX() + 4, pos.getY(), pos.getZ() + 1),
+                                 new BlockPos(pos.getX() + 4, pos.getY(), pos.getZ() - 1),
+                                 new BlockPos(pos.getX() + 3, pos.getY(), pos.getZ() - 3),
+                                 new BlockPos(pos.getX() + 1, pos.getY(), pos.getZ() - 4),
+                                 new BlockPos(pos.getX() - 1, pos.getY(), pos.getZ() - 4),
+                                 new BlockPos(pos.getX() - 3, pos.getY(), pos.getZ() - 3),
+                                 new BlockPos(pos.getX() - 4, pos.getY(), pos.getZ() - 1),
+                                 new BlockPos(pos.getX() - 4, pos.getY(), pos.getZ() + 1),
+                                 new BlockPos(pos.getX() - 3, pos.getY(), pos.getZ() + 3),
+                                 new BlockPos(pos.getX() - 1, pos.getY(), pos.getZ() + 4)};
 
     }
 
-    public int getMaxEssence() {
+    public void setRunning(boolean val) {
 
-        return MaxEssence;
+        Running = val;
 
-    }
-
-    public int getCurProcessingTime() {
-
-        return CurTime;
+        worldObj.markBlockForUpdate(pos);
+        markDirty();
 
     }
 
-    public int getProcessingTime() {
+    public boolean checkForPillars() {
 
-        return TimeToComplete;
+        for(int i = 0; i < pedPos.length; i++) {
+
+            if(worldObj.getBlockState(pedPos[i]) == ModBlocks.ItemPedestal.getDefaultState()) {
+
+                if(i == pedPos.length - 1)
+                    return true;
+
+            }
+            else
+            {
+
+                break;
+
+            }
+        }
+
+        return false;
+
+    }
+
+    public boolean checkForItems() {
+
+        return true;
 
     }
 
     @Override
     public void update() {
 
-        boolean upd = false;
+        if(pedPos == null)
+            setPedPos();
 
-        if(!worldObj.isRemote) {
+        if(!worldObj.isRemote && Running) {
 
-            if(CurEssence > 0) {
+            if(getStackInSlot(0) != null && checkForPillars() && checkForItems()) {
 
-                CurEssence -= EssencePerTick;
+                setInventorySlotContents(0, new ItemStack(ModItems.ImpureVoidIngot));
 
-                upd = true;
-
-                if(getStackInSlot(0) != null && getStackInSlot(1) != null) {
-
-                    if(getStackInSlot(0).getItem() == ModItems.RefinedVoidEssence && getStackInSlot(1).getItem() == Items.diamond) {
-
-                        if(CurTime < TimeToComplete) {
-
-                            CurTime++;
-
-                            CurEssence -= 4;
-
-                        }
-                        else
-                        {
-
-                            if(getStackInSlot(2) != null)
-                                getStackInSlot(2).stackSize++;
-
-                            if(getStackInSlot(2) == null)
-                                setInventorySlotContents(2, new ItemStack(ModItems.CrystallizedEssence));
-
-                            decrStackSize(0, 1);
-                            decrStackSize(1, 1);
-
-                            CurTime = 0;
-
-                            upd = true;
-
-                        }
-                    }
-                    else
-                    {
-
-                        CurTime = 0;
-
-                    }
-                }
-                else
-                {
-
-                    CurTime = 0;
-
-                }
-            }
-
-            if(buffer > 0 && CurEssence < MaxEssence) {
-
-                CurEssence += 10;
-                buffer -= 10;
-
-                upd = true;
+                worldObj.addWeatherEffect(new EntityLightningBolt(worldObj, pos.getX(), pos.getY(), pos.getZ()));
 
             }
 
-            if(CurEssence > MaxEssence) {
-
-                CurEssence = MaxEssence;
-
-                upd = true;
-
-            }
-
-            if(CurEssence < 0) {
-
-                CurEssence = 0;
-
-                upd = true;
-
-            }
-
-            if(getStackInSlot(3) != null) {
-
-                if(CurEssence < MaxEssence - 10) {
-
-                    converting = true;
-
-                }
-                else
-                {
-
-                    converting = false;
-
-                }
-
-                if(converting && buffer == 0) {
-
-                    buffer = getFuelAmount(getStackInSlot(3));
-
-                    decrStackSize(3, 1);
-
-                    upd = true;
-
-                }
-            }
-        }
-
-        if(upd) {
-
-            worldObj.markBlockForUpdate(pos);
-            markDirty();
+            setRunning(false);
 
         }
     }

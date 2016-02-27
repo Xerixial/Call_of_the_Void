@@ -29,6 +29,7 @@ public class ItemPedestal extends BlockContainer implements ITileEntityProvider 
         this.setHardness(6f);
         this.setResistance(10f);
         this.setHarvestLevel("pickaxe", 3);
+        this.setBlockBounds(3f / 16f, 0, 3f / 16f, 1f - 3f / 16f, 1, 1f - 3f / 16f);
         this.isBlockContainer = true;
 
     }
